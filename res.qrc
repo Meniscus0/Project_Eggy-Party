@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/eggbackground.png</file>
+        <file>res/app.ico</file>
+        <file>res/egg_crawl.png</file>
+        <file>res/egg_left.png</file>
+        <file>res/egg_right.png</file>
+        <file>res/egg_rotate.png</file>
+        <file>res/game.wav</file>
+        <file>res/ground1.jpg</file>
+        <file>res/ground2.jpg</file>
+        <file>res/start.wav</file>
+        <file>res/terminal.jpg</file>
+        <file>res/egg_green.png</file>
+        <file>res/end.wav</file>
+    </qresource>
+</RCC>
