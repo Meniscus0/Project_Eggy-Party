@@ -15,7 +15,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+
     void initScene();
+
     QTimer e_Timer;
     //启动游戏  用于启动定时器对象
     void playGame();
@@ -30,14 +33,14 @@ public:
     //键盘移动事件
     void keyPressEvent(QKeyEvent *event);
 
-    void gameMusic();
     void startMusic();
+    void gameMusic();
     void endmusic();
 
     //地图对象
     Map map;
 
-    //飞机对象
+    //蛋仔对象
     Egg eggBoy;
 
 //三个按钮

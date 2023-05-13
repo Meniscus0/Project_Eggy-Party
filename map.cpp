@@ -3,7 +3,6 @@
 #include "ui_mainwindow.h"
 Map::Map()
 {
-
         //初始化加载地图对象
 //    第一张图元素太多，比较杂乱，遂都采用第二张图
         map1.load(MAP_PATH2);
@@ -20,11 +19,11 @@ Map::Map()
 
     void Map::mapPosition()
     {
-
       //控制终点的远近
         if(t>=MAP_LENGTH&&m_t_x>0){
             m_t_x-=5*MAP_SCROLL_SPEED;
         }
+
          //处理第一张图片循环
         if(map1_X <= 0)
         {

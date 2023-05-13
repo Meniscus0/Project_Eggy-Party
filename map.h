@@ -8,15 +8,15 @@ public:
     Map();
     //地图滚动坐标计算
     void mapPosition();
-    void endmusic();
     //地图图片对象
     QPixmap map1;
     QPixmap map2;
     QPixmap m_terminal;
-    //地图Y轴坐标
+    //地图X轴坐标
     int map1_X= MAP_WIDTH;
     int map2_X=0;
     int m_t_x=10*MAP_WIDTH;
+
 //    记录地图循环的次数
     int t=0;
 };

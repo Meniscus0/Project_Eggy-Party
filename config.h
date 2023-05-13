@@ -1,5 +1,4 @@
 #ifndef CONFIG_H
-
 #define CONFIG_H
 //绝大部分用到的头文件
 #include<QPixmap>
@@ -22,6 +21,7 @@
 /**********  地图配置数据 **********/
 #define MAP_WIDTH  1250 //宽度
 #define MAP_HEIGHT 750//高度
+
 //地图图片路径
 #define MAP_PATH1  ":/res/ground1.jpg"
 #define MAP_PATH2  ":/res/ground2.jpg"
@@ -38,6 +38,7 @@
 
 //跳跃速度
 #define V_y 9
+
 //重力加速度
 #define GRAVITY 0.1
 

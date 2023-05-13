@@ -25,22 +25,18 @@ void MainWindow::initScene()
 
     //设置窗口标题
     setWindowTitle(GAME_TITLE);
+    //设置窗口图标
     setWindowIcon(QIcon( GAME_ICON));
 
     //定时器设置
-    e_Timer.setInterval(GAME_RATE);
+    e_Timer.setInterval(GAME_RATE);//设置计时器间隔时间
+
     playGame();
-
-    connect(&e_Timer,&QTimer::timeout,[=](){
-        updateMap();    //更新坐标
-        update();        //刷新屏幕
-    });
-
 
 }
 
 void MainWindow::Win(){
-    e_Timer.stop();
+    e_Timer.stop(); //停止计时器
     ui->restartButton->show();
 }
 
@@ -50,12 +46,16 @@ void MainWindow::playGame()
     e_Timer.start();
 
     //监听定时器
+//    [=]表示以值传递的方式捕获所有外部变量，即lambda表达式可以访问其所在作用域中的所有变量。
+
     connect(&e_Timer,&QTimer::timeout,[=](){
-        //更新游戏中元素的坐标
+        //更新地图
         updateMap();
         //重新绘制图片
         update();
+       //更新蛋仔的纵坐标
         eggBoy.updateY();
+
 //        终点地图移动到左边界
         if(map.m_t_x<=0){
             Win();
@@ -66,7 +66,7 @@ void MainWindow::playGame()
 }
 
 
-
+ //播放开始音乐
 void MainWindow::startMusic(){
     QMediaPlayer *player = new QMediaPlayer(this);
     player->setMedia(QUrl("qrc:/res/start.wav"));
@@ -74,14 +74,14 @@ void MainWindow::startMusic(){
     player->play();
 }
 
-
+//播放游戏音乐
 void MainWindow::gameMusic(){
     QMediaPlayer *player = new QMediaPlayer(this);
     player->setMedia(QUrl("qrc:/res/game.wav"));
     player->setVolume(50);//音量
     player->play();
 }
-
+//播放胜利音乐
 void MainWindow::endmusic(){
     QMediaPlayer *player = new QMediaPlayer();
     player->setMedia(QUrl("qrc:/res/end.wav"));
@@ -89,12 +89,12 @@ void MainWindow::endmusic(){
     player->play();
 }
 
-
 void MainWindow::updateMap()
 {
     //更新地图坐标
     map.mapPosition();
 }
+
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
@@ -108,6 +108,7 @@ void MainWindow::paintEvent(QPaintEvent *event)
     painter.drawPixmap(eggBoy.e_X,eggBoy.e_Y,eggBoy.changePic());
 
 }
+
 
 //鼠标控制
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
@@ -133,6 +134,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     {
         y = MAP_HEIGHT - eggBoy.m_Rect.height();
     }
+
     eggBoy.setPosition(x,y);
 }
 
@@ -140,6 +142,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     eggBoy.Crawl=0,eggBoy.Right=0,eggBoy.Left=0,  eggBoy.Rotate=0;
+
     // 按下W键跳跃
     bool jp=(event->key() == Qt::Key_W);
     if (jp) {
@@ -177,7 +180,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         map.map1_X=map.map1_X-200;
     }
 
-
 }
 
 
@@ -194,7 +196,7 @@ void MainWindow::on_playButton_clicked()
 void MainWindow::on_quitButton_clicked()
 {
 
-    QApplication* app;
+    QApplication* app = nullptr;
     app->quit();
 
 }
