@@ -3,30 +3,28 @@
 Egg::Egg()
 {
     //初始化加载蛋仔图片资源
-    m_Plane.load(HERO_RIGHT);
-    right.load(HERO_RIGHT);
-    left.load(HERO_LEFT);
-    crawl.load(HERO_CRAWL);
-    rotate.load(HERO_ROTATE);
+    right.load(EGG_RIGHT);
+    left.load(EGG_LEFT);
+    crawl.load(EGG_CRAWL);
+    rotate.load(EGG_ROTATE);
 
     //初始化坐标
-    m_X = GAME_WIDTH * 0.5 - getImg().width()*0.5;
-    m_Y = GAME_HEIGHT - getImg().height();
+    e_X = MAP_WIDTH * 0.5 - changePic().width()*0.5;
+    e_Y = MAP_HEIGHT - changePic().height();
 
     //初始化矩形框
-    m_Rect.setWidth(getImg().width());
-    m_Rect.setHeight(getImg().height());
-    m_Rect.moveTo(m_X,m_Y);
+    m_Rect.setWidth(changePic().width());
+    m_Rect.setHeight(changePic().height());
+    m_Rect.moveTo(e_X,e_Y);
 
     // 初始化跳跃定时器
-    jump_Timer.setInterval(380);
+    jump_Timer.setInterval(400);
     jump_Timer.setSingleShot(true);
-
     fall_speed=3;
 
 }
 
-QPixmap Egg::getImg(){              //根据位置获取角色状态图片
+QPixmap Egg::changePic(){              //根据位置获取角色状态图片
     if(Right==1){
         return right;
     }
@@ -47,40 +45,32 @@ QPixmap Egg::getImg(){              //根据位置获取角色状态图片
 
 void Egg::setPosition(int x, int y)
 {
-    m_X = x;
-    m_Y = y;
-    m_Rect.moveTo(m_X,m_Y);
+    e_X = x;
+    e_Y = y;
+    m_Rect.moveTo(e_X,e_Y);
 }
 
-
+//注
 void Egg::jump()
 {
-    if(m_Y==GAME_HEIGHT-m_Rect.height()){
+//    在地面上才能跳跃
+    if(e_Y==MAP_HEIGHT-m_Rect.height()){
         fall_speed=3;
-    }
-    if(jump_Timer.remainingTime()>200&&jump_Timer.isActive()){
-        return;
-    }
-    if(m_Y==GAME_HEIGHT-m_Rect.height()){
         jump_Timer.start();
     }
-
-
 }
 
 void Egg::updateY(){
+
     if(jump_Timer.isActive()){
-        m_Y-=jump_Timer.remainingTime()/20;
+        e_Y-=V_y;
     }
     else{
-        fall_speed+=0.04;
-        m_Y+=fall_speed;
+        fall_speed+=GRAVITY;
+        e_Y+=fall_speed;
     }
 
-    if(m_Y>=GAME_HEIGHT-m_Rect.height()){
-        m_Y=GAME_HEIGHT-m_Rect.height();
+    if(e_Y>=MAP_HEIGHT-m_Rect.height()){
+        e_Y=MAP_HEIGHT-m_Rect.height();
     }
-
-    //    m_Rect.moveTo(m_X,m_Y+8);
 }
-

@@ -16,13 +16,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void initScene();
-    QTimer m_Timer;
-
+    QTimer e_Timer;
     //启动游戏  用于启动定时器对象
     void playGame();
     void Win();
+
     //更新坐标
-    void updatePosition();
+    void updateMap();
     //绘图事件
     void paintEvent(QPaintEvent *event);
     //鼠标移动事件
@@ -30,24 +30,23 @@ public:
     //键盘移动事件
     void keyPressEvent(QKeyEvent *event);
 
-    void on_pushButton_clicke();
-
     void gameMusic();
     void startMusic();
+    void endmusic();
 
     //地图对象
-    Map m_map;
+    Map map;
 
     //飞机对象
-    Egg m_hero;
+    Egg eggBoy;
 
-
+//三个按钮
 private slots:
     void on_playButton_clicked();
 
     void on_quitButton_clicked();
 
-    void on_menu_clicked();
+    void on_restartButton_clicked();
 
 private:
     Ui::MainWindow *ui;

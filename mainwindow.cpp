@@ -1,12 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include<QProcess>
-void MainWindow::startMusic(){
-    QMediaPlayer *player = new QMediaPlayer(this);
-    player->setMedia(QUrl("qrc:/res/start.wav"));
-    player->setVolume(50);//音量
-    player->play();
-}
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,9 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     startMusic();
     ui->setupUi(this);
-    setWindowTitle(GAME_TITLE);
-    setWindowIcon(QIcon( GAME_ICON));
-    ui->menu->hide();
+    ui->restartButton->hide();
 
 }
 
@@ -28,46 +21,57 @@ MainWindow::~MainWindow()
 void MainWindow::initScene()
 {
     //初始化窗口大小
-    setFixedSize(GAME_WIDTH,GAME_HEIGHT);
+    setFixedSize(MAP_WIDTH,MAP_HEIGHT);
 
     //设置窗口标题
     setWindowTitle(GAME_TITLE);
-
     setWindowIcon(QIcon( GAME_ICON));
 
     //定时器设置
-    m_Timer.setInterval(GAME_RATE);
+    e_Timer.setInterval(GAME_RATE);
     playGame();
 
-    connect(&m_Timer,&QTimer::timeout,[=](){
-        updatePosition();    //更新坐标
-        update();          //刷新屏幕
+    connect(&e_Timer,&QTimer::timeout,[=](){
+        updateMap();    //更新坐标
+        update();        //刷新屏幕
     });
 
 
 }
 
 void MainWindow::Win(){
-    m_Timer.stop();
-    ui->menu->show();
+    e_Timer.stop();
+    ui->restartButton->show();
 }
+
 void MainWindow::playGame()
 {
     //启动定时器
-    m_Timer.start();
+    e_Timer.start();
 
     //监听定时器
-    connect(&m_Timer,&QTimer::timeout,[=](){
+    connect(&e_Timer,&QTimer::timeout,[=](){
         //更新游戏中元素的坐标
-        updatePosition();
+        updateMap();
         //重新绘制图片
         update();
-        m_hero.updateY();
-        if(m_map.m_t_x<=0){
+        eggBoy.updateY();
+//        终点地图移动到左边界
+        if(map.m_t_x<=0){
             Win();
+            endmusic();
         }
 
     });
+}
+
+
+
+void MainWindow::startMusic(){
+    QMediaPlayer *player = new QMediaPlayer(this);
+    player->setMedia(QUrl("qrc:/res/start.wav"));
+    player->setVolume(50);//音量
+    player->play();
 }
 
 
@@ -78,96 +82,106 @@ void MainWindow::gameMusic(){
     player->play();
 }
 
+void MainWindow::endmusic(){
+    QMediaPlayer *player = new QMediaPlayer();
+    player->setMedia(QUrl("qrc:/res/end.wav"));
+    player->setVolume(50);//音量
+    player->play();
+}
 
-void MainWindow::updatePosition()
+
+void MainWindow::updateMap()
 {
     //更新地图坐标
-    m_map.mapPosition();
+    map.mapPosition();
 }
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    //绘制地图
-    painter.drawPixmap(m_map.m_map1_posX,0 , m_map.m_map1);
-    painter.drawPixmap(m_map.m_map2_posX,0, m_map.m_map2);
-    painter.drawPixmap(m_map.m_t_x,0,m_map.m_terminal);
-    painter.drawPixmap(m_hero.m_X,m_hero.m_Y,m_hero.getImg());
-
-    //    补充绘制左侧地图
-    //    for(int i=-GAME_WIDTH;i>=-10*GAME_WIDTH;i-=GAME_WIDTH)
+    //绘制三张地图
+    painter.drawPixmap(map.map1_X,0 , map.map1);
+    painter.drawPixmap(map.map2_X,0, map.map2);
+    //仅仅画出，没有显示到窗口中
+    painter.drawPixmap(map.m_t_x,0,map.m_terminal);
+    //画蛋仔
+    painter.drawPixmap(eggBoy.e_X,eggBoy.e_Y,eggBoy.changePic());
 
 }
 
+//鼠标控制
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
-    int x = event->x() - m_hero.m_Rect.width()*0.5; //鼠标位置 - 蛋仔矩形的一半
-    int y = event->y() - m_hero.m_Rect.height()*0.5;
+    //鼠标位置 - 蛋仔矩形的一半
+    int x = event->x() - eggBoy.m_Rect.width()*0.5;
+    int y = event->y() - eggBoy.m_Rect.height()*0.5;
 
     //边界检测
     if(x <= 0 )
     {
         x = 0;
     }
-    if(x >= GAME_WIDTH - m_hero.m_Rect.width())
+    if(x >= MAP_WIDTH - eggBoy.m_Rect.width())
     {
-        x = GAME_WIDTH - m_hero.m_Rect.width();
+        x = MAP_WIDTH - eggBoy.m_Rect.width();
     }
     if(y <= 0)
     {
         y = 0;
     }
-    if(y >= GAME_HEIGHT - m_hero.m_Rect.height())
+    if(y >= MAP_HEIGHT - eggBoy.m_Rect.height())
     {
-        y = GAME_HEIGHT - m_hero.m_Rect.height();
+        y = MAP_HEIGHT - eggBoy.m_Rect.height();
     }
-    m_hero.setPosition(x,y);
+    eggBoy.setPosition(x,y);
 }
 
+//键盘控制
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-    m_hero.Crawl=0,m_hero.Right=0,m_hero.Left=0,  m_hero.Rotate=0;
+    eggBoy.Crawl=0,eggBoy.Right=0,eggBoy.Left=0,  eggBoy.Rotate=0;
+    // 按下W键跳跃
     bool jp=(event->key() == Qt::Key_W);
-    if (jp) {  // 如果按下了W键
-        m_hero.jump();
+    if (jp) {
+        eggBoy.jump();
     }
-    if (event->key() == Qt::Key_Space){  // 如果按下了空格键
-        m_hero.Crawl=1;
-        m_map.m_map2_posX=m_map.m_map2_posX-300;
-        m_map.m_map1_posX=m_map.m_map1_posX-300;
-
-        //       m_hero.m_X= m_hero.m_X+100;
+     // 按下空格键翻滚
+    if (event->key() == Qt::Key_Space){
+        eggBoy.Crawl=1;
+        map.map2_X=map.map2_X-300;
+        map.map1_X=map.map1_X-300;
     }
-    if (event->key() == Qt::Key_D) {  // 如果按下了D键
-        m_hero.Right=1;
-        m_map.m_map2_posX=m_map.m_map2_posX-50;
-        m_map.m_map1_posX=m_map.m_map1_posX-50;
-        //       m_hero.m_X= m_hero.m_X+10;
-    }
-    if (event->key() == Qt::Key_A) {  // 如果按下了A键
-        m_hero.Left=1;
-        m_map.m_map2_posX=m_map.m_map2_posX+50;
-        m_map.m_map1_posX=m_map.m_map1_posX+50;
-        if(m_map.m_map2_posX>=0)
-            m_map.m_map2_posX=0;
-        if(m_map.m_map1_posX>=GAME_WIDTH)
-            m_map.m_map1_posX=GAME_WIDTH;
-
-        //       m_hero.m_X= m_hero.m_X-10;
+    // 按下D键右移
+    if (event->key() == Qt::Key_D) {
+        eggBoy.Right=1;
+        map.map2_X=map.map2_X-50;
+        map.map1_X=map.map1_X-50;
     }
 
-    if (event->key() == Qt::Key_S) {  // 如果按下了S键
-        m_hero.Rotate=1;
-        m_map.m_map2_posX=m_map.m_map2_posX-200;
-        m_map.m_map1_posX=m_map.m_map1_posX-200;
-        //       m_hero.m_X= m_hero.m_X-10;
+    if (event->key() == Qt::Key_A) {
+        eggBoy.Left=1;
+        map.map2_X=map.map2_X+50;
+        map.map1_X=map.map1_X+50;
+
+        //防止蛋仔过度向左移动
+        if(map.map2_X>=0)
+            map.map2_X=0;
+        if(map.map1_X>=MAP_WIDTH)
+            map.map1_X=MAP_WIDTH;
+    }
+
+    // 按下S键飞扑
+    if (event->key() == Qt::Key_S) {
+        eggBoy.Rotate=1;
+        map.map2_X=map.map2_X-200;
+        map.map1_X=map.map1_X-200;
     }
 
 
 }
 
 
-
+//开始键
 void MainWindow::on_playButton_clicked()
 {
     ui->playButton->hide();
@@ -176,17 +190,17 @@ void MainWindow::on_playButton_clicked()
     initScene();
     gameMusic();
 }
-
+//退出键
 void MainWindow::on_quitButton_clicked()
 {
 
     QApplication* app;
-     app->quit();
+    app->quit();
 
 }
 
-
-void MainWindow::on_menu_clicked()
+//重玩键
+void MainWindow::on_restartButton_clicked()
 {
      qApp->quit();
      QProcess::startDetached(qApp->applicationFilePath(), QStringList());

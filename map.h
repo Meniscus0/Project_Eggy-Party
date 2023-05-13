@@ -10,16 +10,14 @@ public:
     void mapPosition();
     void endmusic();
     //地图图片对象
-    QPixmap m_map1;
-    QPixmap m_map2;
+    QPixmap map1;
+    QPixmap map2;
     QPixmap m_terminal;
     //地图Y轴坐标
-    int m_map1_posX= GAME_WIDTH;
-    int m_map2_posX=0;
-    int m_t_x=10*GAME_WIDTH;
-
-    //地图滚动幅度
-    int m_scroll_speed;
+    int map1_X= MAP_WIDTH;
+    int map2_X=0;
+    int m_t_x=10*MAP_WIDTH;
+//    记录地图循环的次数
     int t=0;
 };
 
