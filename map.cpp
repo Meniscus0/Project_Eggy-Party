@@ -9,7 +9,7 @@ Map::Map()
         map2.load(MAP_PATH2);
 //        终点地图
         m_terminal.load(MAP_PATH3);
-        //设置地图其实x轴坐标
+        //设置地图x坐标
         map1_X = MAP_WIDTH;
         map2_X = 0;
         m_t_x=MAP_WIDTH;
