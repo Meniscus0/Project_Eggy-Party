@@ -28,8 +28,8 @@ void MainWindow::initScene()
     //设置窗口图标
     setWindowIcon(QIcon( GAME_ICON));
 
-    //定时器设置
-    e_Timer.setInterval(GAME_RATE);//设置计时器间隔时间
+    //定时器设置，设置计时器间隔时间
+    e_Timer.setInterval(GAME_RATE);
 
     playGame();
 
