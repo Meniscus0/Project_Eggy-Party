@@ -12,7 +12,7 @@ public:
     QPixmap map1;
     QPixmap map2;
     QPixmap m_terminal;
-    //地图X轴坐标
+    //地图X坐标
     int map1_X= MAP_WIDTH;
     int map2_X=0;
     int m_t_x=10*MAP_WIDTH;

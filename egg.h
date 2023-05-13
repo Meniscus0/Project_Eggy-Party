@@ -1,6 +1,6 @@
 #ifndef EGG_H
 #define EGG_H
-#include"config.h"
+#include <config.h>
 
 class Egg
 {
@@ -29,8 +29,6 @@ public:
 
     //蛋仔的矩形边框
     QRect m_Rect;
-
-    bool m_isJumping=0;
 
     QTimer jump_Timer;
     //    下落速度
